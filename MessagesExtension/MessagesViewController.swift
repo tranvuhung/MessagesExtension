@@ -114,6 +114,15 @@ extension MessagesViewController{
         return viewController
     }
     
+    func instantiateGuessViewController(game: DrawPicGame?) -> UIViewController{
+        guard let viewController = storyboard?.instantiateViewController(withIdentifier: "guessVC") as? GuessViewController else {
+            fatalError("Unable to instantiate a guess view controller")
+        }
+        viewController.game = game
+        viewController.delegate = self
+        return viewController
+    }
+    
     func presentViewController(forConversation conversation: MSConversation, withPresentationStyle style: MSMessagesAppPresentationStyle){
         let controller: UIViewController
         //TODO: Create the right viewcontroller here
@@ -121,8 +130,17 @@ extension MessagesViewController{
         case .compact:
             controller = instantiateSummaryViewController(game: nil)
         case .expanded:
-            let newGame = DrawPicGame.newGame(drawerId: conversation.localParticipantIdentifier)
-            controller = instantiateDrawingViewController(game: newGame)
+            if let game = DrawPicGame(message: conversation.selectedMessage){
+                switch game.gameState {
+                case .guess:
+                    controller = instantiateDrawingViewController(game: game)
+                case .challenge:
+                    controller = instantiateGuessViewController(game: game)
+                }
+            } else{
+                let newGame = DrawPicGame.newGame(drawerId: conversation.localParticipantIdentifier)
+                controller = instantiateDrawingViewController(game: newGame)
+            }
         }
         switchTo(viewcontroller: controller)
     }
@@ -143,6 +161,11 @@ extension MessagesViewController{
         layout.caption = caption
         let message = MSMessage(session: session ?? MSSession())
         message.layout = layout
+        
+        var components = URLComponents()
+        components.queryItems = game.queryItems
+        message.url = components.url
+        
         return message
     }
 }
@@ -154,8 +177,28 @@ extension MessagesViewController: DrawingViewControllerDelegate{
         }
         guard let conversation = activeConversation, let game = game else {return}
         let message = composeMessages(with: game, caption: "Guess my Draw", session: conversation.selectedMessage?.session)
+        if let drawing = game.currentDrawing{
+            DrawingStore.store(image: drawing, forUUID: game.gameId)
+        }
         conversation.insert(message) { (error) in
             if let error = error{
+                print(error)
+            }
+        }
+    }
+}
+
+//MARK: - GuessControllerDelegate
+extension MessagesViewController: GuessViewControllerDelegate{
+    func handleGuessSubmission(forGame game: DrawPicGame, guess: String) {
+        defer { dismiss() }
+        guard let conversation = activeConversation else { return }
+        let prefix = game.check(guess: guess) ? "👍" : "👎"
+        let guesser = "$\(conversation.localParticipantIdentifier)"
+        let caption = "\(prefix) \(guesser) guessed \(guess)"
+        let message = composeMessages(with: game, caption: caption, session: conversation.selectedMessage?.session)
+        conversation.insert(message) { (error) in
+            if let error = error {
                 print(error)
             }
         }

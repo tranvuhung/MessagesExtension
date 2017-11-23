@@ -28,7 +28,7 @@ struct DrawPicGame{
     }
 }
 
-enum GameState{
+enum GameState: String {
     case challenge
     case guess
 }
@@ -53,5 +53,55 @@ extension DrawPicGame{
     
     func owner(conversation: MSConversation) -> Bool{
         return conversation.localParticipantIdentifier == drawerId
+    }
+}
+
+//MARK: - Encoding, Decoding
+extension DrawPicGame{
+    var queryItems: [URLQueryItem]{
+        var items = [URLQueryItem]()
+        
+        items.append(URLQueryItem(name: "word", value: word))
+        items.append(URLQueryItem(name: "guesses", value: guesses.joined(separator: "::-::")))
+        items.append(URLQueryItem(name: "drawerId", value: drawerId.uuidString))
+        items.append(URLQueryItem(name: "gameState", value: gameState.rawValue))
+        items.append(URLQueryItem(name: "gameId", value: gameId.uuidString))
+        
+        return items
+    }
+    
+    init?(queryItems: [URLQueryItem]) {
+        var word: String?
+        var guesses = [String]()
+        var drawerId: UUID?
+        var gameId: UUID?
+        for item in queryItems {
+            guard let value = item.value else { continue }
+            switch item.name {
+            case "word":
+                word = value
+            case "guesses":
+                guesses = value.components(separatedBy: "::-::")
+            case "drawerId":
+                drawerId = UUID(uuidString: value)
+            case "gameState":
+                self.gameState = GameState(rawValue: value)!
+            case "gameId":
+                gameId = UUID(uuidString: value)
+            default:
+                continue
+            }
+        }
+        guard let decodedWord = word, let decodedDrawerId = drawerId, let decodedGameId = gameId else { return nil }
+        self.word = decodedWord
+        self.guesses = guesses
+        self.currentDrawing = DrawingStore.image(forUUID: decodedGameId)
+        self.drawerId = decodedDrawerId
+        self.gameId = decodedGameId
+    }
+    
+    init?(message: MSMessage?) {
+        guard let messageURL = message?.url, let urlComponents = URLComponents(url: messageURL, resolvingAgainstBaseURL: false), let queryItems = urlComponents.queryItems else { return nil }
+        self.init(queryItems: queryItems)
     }
 }
