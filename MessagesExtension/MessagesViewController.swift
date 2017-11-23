@@ -28,6 +28,7 @@ class MessagesViewController: MSMessagesAppViewController {
         // This will happen when the extension is about to present UI.
         
         // Use this method to configure the extension and restore previously stored state.
+        presentViewController(forConversation: conversation, withPresentationStyle: presentationStyle)
     }
     
     override func didResignActive(with conversation: MSConversation) {
@@ -61,6 +62,9 @@ class MessagesViewController: MSMessagesAppViewController {
         // Called before the extension transitions to a new presentation style.
     
         // Use this method to prepare for the change in presentation style.
+        if let conversation = activeConversation{
+            presentViewController(forConversation: conversation, withPresentationStyle: presentationStyle)
+        }
     }
     
     override func didTransition(to presentationStyle: MSMessagesAppPresentationStyle) {
@@ -68,5 +72,92 @@ class MessagesViewController: MSMessagesAppViewController {
     
         // Use this method to finalize any behaviors associated with the change in presentation style.
     }
+}
 
+//MARK: - Child View Controllers
+extension MessagesViewController{
+    func switchTo(viewcontroller controller: UIViewController){
+        //Remove any existing child view controller
+        for child in childViewControllers{
+            child.willMove(toParentViewController: .none)
+            child.view.removeFromSuperview()
+            child.removeFromParentViewController()
+        }
+        
+        //Add the new child view controller
+        addChildViewController(controller)
+        controller.view.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(controller.view)
+        
+        NSLayoutConstraint.activate([controller.view.leftAnchor.constraint(equalTo: view.leftAnchor),
+            controller.view.rightAnchor.constraint(equalTo: view.rightAnchor),
+            controller.view.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor),
+            controller.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)])
+        controller.didMove(toParentViewController: self)
+    }
+    
+    func instantiateSummaryViewController(game: DrawPicGame?) -> UIViewController{
+        guard let viewController = storyboard?.instantiateViewController(withIdentifier: "summaryVC") as? SummaryViewController else {
+            fatalError("Unable to instantiate a summary view controller")
+        }
+        viewController.game = game
+        viewController.delegate = self
+        return viewController
+    }
+    
+    func instantiateDrawingViewController(game: DrawPicGame?) -> UIViewController{
+        guard let viewController = storyboard?.instantiateViewController(withIdentifier: "drawingVC") as? DrawingViewController else {
+            fatalError("Unable to instantiate a drawing view controller")
+        }
+        viewController.game = game
+        viewController.delegate = self
+        return viewController
+    }
+    
+    func presentViewController(forConversation conversation: MSConversation, withPresentationStyle style: MSMessagesAppPresentationStyle){
+        let controller: UIViewController
+        //TODO: Create the right viewcontroller here
+        switch style{
+        case .compact:
+            controller = instantiateSummaryViewController(game: nil)
+        case .expanded:
+            let newGame = DrawPicGame.newGame(drawerId: conversation.localParticipantIdentifier)
+            controller = instantiateDrawingViewController(game: newGame)
+        }
+        switchTo(viewcontroller: controller)
+    }
+}
+
+//MARK: - Summary View Controller Delegate
+extension MessagesViewController: SummaryViewControllerDelegate {
+    func handleSummaryTap(forGame game: DrawPicGame?) {
+        requestPresentationStyle(MSMessagesAppPresentationStyle.expanded)
+    }
+}
+
+//MARK: - Send messages
+extension MessagesViewController{
+    func composeMessages(with game: DrawPicGame, caption: String, session: MSSession? = .none) -> MSMessage{
+        let layout = MSMessageTemplateLayout()
+        layout.image = game.currentDrawing
+        layout.caption = caption
+        let message = MSMessage(session: session ?? MSSession())
+        message.layout = layout
+        return message
+    }
+}
+//MARK: - DrawingViewControllerDelegate
+extension MessagesViewController: DrawingViewControllerDelegate{
+    func handleDrawingComplete(game: DrawPicGame?) {
+        defer {
+            dismiss()
+        }
+        guard let conversation = activeConversation, let game = game else {return}
+        let message = composeMessages(with: game, caption: "Guess my Draw", session: conversation.selectedMessage?.session)
+        conversation.insert(message) { (error) in
+            if let error = error{
+                print(error)
+            }
+        }
+    }
 }

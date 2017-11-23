@@ -13,6 +13,14 @@
 		62D34E311FC50ECC007B3228 /* MessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D34E301FC50ECC007B3228 /* MessagesViewController.swift */; };
 		62D34E341FC50ECC007B3228 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 62D34E321FC50ECC007B3228 /* MainInterface.storyboard */; };
 		62D34E361FC50ECC007B3228 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 62D34E351FC50ECC007B3228 /* Assets.xcassets */; };
+		62D34E431FC50F85007B3228 /* DrawPicGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D34E421FC50F85007B3228 /* DrawPicGame.swift */; };
+		62D34E481FC512A4007B3228 /* DrawingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D34E471FC512A4007B3228 /* DrawingViewController.swift */; };
+		62D34E4B1FC512E3007B3228 /* Canvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D34E4A1FC512E3007B3228 /* Canvas.swift */; };
+		62D34E4E1FC5142F007B3228 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D34E4D1FC5142F007B3228 /* Utilities.swift */; };
+		62D34E501FC517A0007B3228 /* ProgressCircle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D34E4F1FC517A0007B3228 /* ProgressCircle.swift */; };
+		62D34E521FC51EEF007B3228 /* SummaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D34E511FC51EEF007B3228 /* SummaryViewController.swift */; };
+		62D34E541FC51F7F007B3228 /* GuessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D34E531FC51F7F007B3228 /* GuessViewController.swift */; };
+		62D34E561FC51FFB007B3228 /* DrawingStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D34E551FC51FFB007B3228 /* DrawingStore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +57,14 @@
 		62D34E331FC50ECC007B3228 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		62D34E351FC50ECC007B3228 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		62D34E371FC50ECC007B3228 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		62D34E421FC50F85007B3228 /* DrawPicGame.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawPicGame.swift; sourceTree = "<group>"; };
+		62D34E471FC512A4007B3228 /* DrawingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingViewController.swift; sourceTree = "<group>"; };
+		62D34E4A1FC512E3007B3228 /* Canvas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Canvas.swift; sourceTree = "<group>"; };
+		62D34E4D1FC5142F007B3228 /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
+		62D34E4F1FC517A0007B3228 /* ProgressCircle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressCircle.swift; sourceTree = "<group>"; };
+		62D34E511FC51EEF007B3228 /* SummaryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SummaryViewController.swift; sourceTree = "<group>"; };
+		62D34E531FC51F7F007B3228 /* GuessViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GuessViewController.swift; sourceTree = "<group>"; };
+		62D34E551FC51FFB007B3228 /* DrawingStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingStore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,12 +118,52 @@
 		62D34E2F1FC50ECC007B3228 /* MessagesExtension */ = {
 			isa = PBXGroup;
 			children = (
+				62D34E4C1FC51426007B3228 /* Utilities */,
+				62D34E491FC512CA007B3228 /* Views */,
+				62D34E441FC51265007B3228 /* Controllers */,
+				62D34E411FC50F52007B3228 /* Models */,
 				62D34E301FC50ECC007B3228 /* MessagesViewController.swift */,
 				62D34E321FC50ECC007B3228 /* MainInterface.storyboard */,
 				62D34E351FC50ECC007B3228 /* Assets.xcassets */,
 				62D34E371FC50ECC007B3228 /* Info.plist */,
 			);
 			path = MessagesExtension;
+			sourceTree = "<group>";
+		};
+		62D34E411FC50F52007B3228 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				62D34E421FC50F85007B3228 /* DrawPicGame.swift */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		62D34E441FC51265007B3228 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				62D34E471FC512A4007B3228 /* DrawingViewController.swift */,
+				62D34E511FC51EEF007B3228 /* SummaryViewController.swift */,
+				62D34E531FC51F7F007B3228 /* GuessViewController.swift */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		62D34E491FC512CA007B3228 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				62D34E4A1FC512E3007B3228 /* Canvas.swift */,
+				62D34E4F1FC517A0007B3228 /* ProgressCircle.swift */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		62D34E4C1FC51426007B3228 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				62D34E4D1FC5142F007B3228 /* Utilities.swift */,
+				62D34E551FC51FFB007B3228 /* DrawingStore.swift */,
+			);
+			name = Utilities;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -213,7 +269,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				62D34E431FC50F85007B3228 /* DrawPicGame.swift in Sources */,
+				62D34E481FC512A4007B3228 /* DrawingViewController.swift in Sources */,
+				62D34E541FC51F7F007B3228 /* GuessViewController.swift in Sources */,
 				62D34E311FC50ECC007B3228 /* MessagesViewController.swift in Sources */,
+				62D34E4E1FC5142F007B3228 /* Utilities.swift in Sources */,
+				62D34E501FC517A0007B3228 /* ProgressCircle.swift in Sources */,
+				62D34E561FC51FFB007B3228 /* DrawingStore.swift in Sources */,
+				62D34E521FC51EEF007B3228 /* SummaryViewController.swift in Sources */,
+				62D34E4B1FC512E3007B3228 /* Canvas.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
